@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,intial-scale=1.0">
+	<title>	Fantasy Cricket </title>
+	
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+</head>
+
+<body ng-app="body">
+
+
+<div ng-controller="signinCtrl">
+	<form>
+		<input type="number" ng-model="phnno" placeholder="PhoneNumber" min="1000000000" max="9999999999" required>
+		<br>
+		<input type="password" ng-model="pwd" placeholder="Password" required>
+		<br>
+		<button type="submit" name="signin" ng-click="signin()" ng-disabled="!phnno||!pwd"> Signin </button>
+		<br>
+	</form>
+</div>
+
+<div ng-controller="signupCtrl">
+	<form>
+		<input type="text" ng-model="name" placeholder="Name" required>
+		<br>
+		<input type="text" ng-model="uname" placeholder="UserName" required>
+		<br>
+		<input type="number" ng-model="phnno" placeholder="PhoneNumber" min="1000000000" max="9999999999" required>
+		<br>
+		<input type="password" ng-model="pwd" placeholder="Password" required>
+		<br>
+		<button type="submit" name="signup" ng-click="signup()" ng-disabled="!name||!uname||!phnno||!pwd"> Signup </button>
+		<br>
+	</form>
+</div>
+
+<script>
+if(sessionStorage.getItem("uname") != null)
+	window.top.location = "index.html";
+
+var bodyApp = angular.module("body", []);
+
+bodyApp.controller("signupCtrl", function($scope, $http) {
+	$scope.signup = function() {
+		$scope.load = true;
+		$http({
+			method : "POST",
+			url    : "../server/entry.php?page=signup",
+			data   : {
+				name  : $scope.name,
+				uname : $scope.uname,
+				phnno : $scope.phnno,
+				pwd   : $scope.pwd
+			}
+		}).then(function(data) {
+			console.log(data.data);
+
+			if(data.data.status) {
+				sessionStorage.setItem("uname", $scope.uname);
+				window.location.reload();
+			}
+			else if(!data.data.phnno)
+				alert('This phone number is already registered.');
+			else if(!data.data.uname)
+				alert('This username is already taken.');
+
+			// if(data.data.status == 'error')
+			// 	alert('Something went wrong. Try again or contact developer.');
+
+		}, function myError(response) {
+			console.log(response);
+		});
+	}
+});
+
+bodyApp.controller("signinCtrl", function($scope, $http) {
+	$scope.signin = function() {
+		$http({
+			method : "POST",
+			url    : "../server/entry.php?page=signin",
+			data   : {
+				phnno : $scope.phnno,
+				pwd   : $scope.pwd
+			}
+		}).then(function(data) {
+			console.log(data.data);
+
+			if(data.data.status) {
+				sessionStorage.setItem("uname", $scope.uname);
+				window.location.reload();
+			}
+			else if(!data.data.phnno)
+				alert('This phone number is not registered.');
+			else if(!data.data.status)
+				alert('The username or password is wrong.');
+
+			// if(data.data.status == 'error')
+			// 	alert('Something went wrong. Try again or contact developer.');
+
+		}, function myError(response) {
+			console.log(response);
+		});
+	}
+});
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+</body>
+</html>
