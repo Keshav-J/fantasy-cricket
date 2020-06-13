@@ -44,7 +44,7 @@
 
 <script>
 if(sessionStorage.getItem("admin-uname") != null)
-	window.top.location = "admin_index.html";
+	window.top.location = "index.html";
 
 var bodyApp = angular.module("body", []);
 
@@ -53,7 +53,7 @@ bodyApp.controller("signupCtrl", function($scope, $http) {
 		$scope.load = true;
 		$http({
 			method : "POST",
-			url    : "../server/admin_entry.php?page=signup",
+			url    : "../../server/admin_entry.php?page=signup",
 			data   : {
 				name  : $scope.name,
 				uname : $scope.uname,
@@ -85,7 +85,7 @@ bodyApp.controller("signinCtrl", function($scope, $http) {
 	$scope.signin = function() {
 		$http({
 			method : "POST",
-			url    : "../server/admin_entry.php?page=signin",
+			url    : "../../server/admin_entry.php?page=signin",
 			data   : {
 				phnno : $scope.phnno,
 				pwd   : $scope.pwd
