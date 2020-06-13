@@ -26,6 +26,16 @@
 		<br>
 		<input type="number" ng-model="age" placeholder="Age" min="0" required>
 		<br>
+		<label><b> Team </b></label>
+		<br>
+		<select ng-model="team" required>
+			<option value="India"> India </option>
+			<option value="South Africa"> South Africa </option>
+			<option value="England"> England </option>
+			<option value="New Zealand"> New Zealand </option>
+			<option value="Australia"> Australia </option>
+		</select>
+		<br>
 		<label><b> Choose Batting Style </b></label>
 		<br>
 		<label>
@@ -67,10 +77,10 @@
 		<br>
 		<label><b> Authentication Code </b></label>
 		<br>
-		<input type="text" ng-model="authCode" placeholder="Authentication Code" required>
+		<input type="password" ng-model="authCode" placeholder="Authentication Code" required>
 		<br>
 		<br>
-		<button type="submit" name="add-player" ng-click="addPlayer()" ng-disabled="!name||!age||!battingStyle||!bowlingStyle||!pool||!cost||!authCode"> Add Player </button>
+		<button type="submit" name="add-player" ng-click="addPlayer()" ng-disabled="!name||!age||!team||!battingStyle||!bowlingStyle||!pool||!cost||!authCode"> Add Player </button>
 		<br>
 	</form>
 </div>
@@ -85,6 +95,7 @@ bodyApp.controller("addPlayerCtrl", function($scope, $http) {
 	$scope.addPlayer = function() {
 		console.log($scope.name);
 		console.log($scope.age);
+		console.log($scope.team);
 		console.log($scope.battingStyle);
 		console.log($scope.bowlingStyle);
 		console.log($scope.pool);
@@ -108,6 +119,7 @@ bodyApp.controller("addPlayerCtrl", function($scope, $http) {
 			data   : {
 				name 		 : $scope.name,
 				age 		 : $scope.age,
+				team 		 : $scope.team,
 				battingStyle : $scope.battingStyle,
 				bowlingStyle : $scope.bowlingStyle,
 				pool 		 : $scope.pool,
@@ -123,36 +135,6 @@ bodyApp.controller("addPlayerCtrl", function($scope, $http) {
 			}
 			else if(!data.data.auth)
 				alert('Invalid Authentication Code.');
-
-			// if(data.data.status == 'error')
-			// 	alert('Something went wrong. Try again or contact developer.');
-
-		}, function myError(response) {
-			console.log(response);
-		});
-	}
-});
-
-bodyApp.controller("signinCtrl", function($scope, $http) {
-	$scope.signin = function() {
-		$http({
-			method : "POST",
-			url    : "../../server/admin_entry.php?page=signin",
-			data   : {
-				phnno : $scope.phnno,
-				pwd   : $scope.pwd
-			}
-		}).then(function(data) {
-			console.log(data.data);
-
-			if(data.data.status) {
-				sessionStorage.setItem("admin-uname", $scope.uname);
-				window.location.reload();
-			}
-			else if(!data.data.phnno)
-				alert('This phone number is not registered.');
-			else if(!data.data.status)
-				alert('The username or password is wrong.');
 
 			// if(data.data.status == 'error')
 			// 	alert('Something went wrong. Try again or contact developer.');

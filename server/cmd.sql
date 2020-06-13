@@ -18,6 +18,7 @@ CREATE TABLE players(
 	id int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	name varchar(256) NOT NULL,
 	age int(3) NOT NULL,
+	team varchar(30) NOT NULL,
 	batting_style varchar(30) NOT NULL,
 	bowling_style varchar(30) NOT NULL,
 	pool varchar(30) NOT NULL,

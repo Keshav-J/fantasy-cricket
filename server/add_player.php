@@ -7,6 +7,7 @@ $data = json_decode(file_get_contents("php://input"));
 if($_GET['page'] == 'addPlayer') {
 	$name = $data->name;
 	$age = $data->age;
+	$team = $data->team;
 	$battingStyle = $data->battingStyle;
 	$bowlingStyle = $data->bowlingStyle;
 	$pool = $data->pool;
@@ -14,7 +15,7 @@ if($_GET['page'] == 'addPlayer') {
 	$authCode = $data->authCode;
 
 
-	if(empty($name) || empty($age) || empty($battingStyle) || empty($bowlingStyle) || empty($pool) || empty($cost) || empty($authCode)) {
+	if(empty($name) || empty($age) || empty($team) || empty($battingStyle) || empty($bowlingStyle) || empty($pool) || empty($cost) || empty($authCode)) {
 		echo 'empty';
 		exit();
 	}
@@ -26,7 +27,7 @@ if($_GET['page'] == 'addPlayer') {
 
 	$status = 0;
 	if($authValid) {
-		$sql = "INSERT INTO players(name, age, batting_style, bowling_style, pool, cost) VALUES('$name', '$age', '$battingStyle', '$bowlingStyle', '$pool', '$cost');";
+		$sql = "INSERT INTO players(name, age, team, batting_style, bowling_style, pool, cost) VALUES('$name', '$age', '$team', '$battingStyle', '$bowlingStyle', '$pool', '$cost');";
 		mysqli_query($conn, $sql);
 
 		$status = 1;
