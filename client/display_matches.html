@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,intial-scale=1.0">
+	<title>	Fantasy Cricket </title>
+	
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+</head>
+
+<body ng-app="body">
+
+
+<div ng-controller="displayMatchesCtrl">
+	<table>
+		<tr>
+			<th> Match_id </th>
+			<th> Home Team </th>
+			<th> Away Team </th>
+			<th> Venue </th>
+			<th> Schedule </th>
+		</tr>
+		<tr ng-repeat="m in matches">
+			<td> {{ m.id }} </td>
+			<td> {{ m.team1 }} </td>
+			<td> {{ m.team2 }} </td>
+			<td> {{ m.venue }} </td>
+			<td> {{ m.schedule }} </td>
+		</tr>
+	</table>
+</div>
+
+<script>
+if(sessionStorage.getItem("admin-uname") == null)
+	window.top.location = "index.html";
+
+var bodyApp = angular.module("body", []);
+
+bodyApp.controller("displayMatchesCtrl", function($scope, $http) {
+	$scope.matches = [];
+
+	$scope.displayMatches = function() {
+		$http({
+			method : "POST",
+			url    : "../server/display.php?page=displayMatches",
+			data   : {
+			}
+		}).then(function(data) {
+			console.log(data.data);
+
+			if(data.data.status) {
+				$scope.matches = data.data.matches;
+			}
+			else
+				alert('Something went wrong. Try again or contact developer.');
+
+		}, function myError(response) {
+			console.log(response);
+		});
+	}
+
+	$scope.displayMatches();
+});
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -111,7 +111,6 @@ bodyApp.controller("addPlayerCtrl", function($scope, $http) {
 		}
 
 		// console.log('no issue');
-		$scope.load = true;
 		$http({
 			method : "POST",
 			url    : "../../server/add_player.php?page=addPlayer",

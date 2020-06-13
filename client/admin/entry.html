@@ -50,7 +50,6 @@ var bodyApp = angular.module("body", []);
 
 bodyApp.controller("signupCtrl", function($scope, $http) {
 	$scope.signup = function() {
-		$scope.load = true;
 		$http({
 			method : "POST",
 			url    : "../../server/admin_entry.php?page=signup",

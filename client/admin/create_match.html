@@ -86,7 +86,6 @@ bodyApp.controller("createMatchCtrl", function($scope, $http) {
 		}
 
 		// console.log('no issue');
-		$scope.load = true;
 		$http({
 			method : "POST",
 			url    : "../../server/create_match.php?page=createMatch",
