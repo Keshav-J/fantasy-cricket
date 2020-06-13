@@ -24,3 +24,11 @@ CREATE TABLE players(
 	pool varchar(30) NOT NULL,
 	cost int(11) NOT NULL
 );
+
+CREATE TABLE matches(
+	id int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	team1 varchar(30) NOT NULL,
+	team2 varchar(30) NOT NULL,
+	venue varchar(50) NOT NULL,
+	schedule datetime NOT NULL
+);
