@@ -16,21 +16,27 @@
 <body ng-app="body">
 
 
-<div ng-controller="displayMatchesCtrl">
+<div ng-controller="displayPlayersCtrl">
 	<table>
 		<tr>
 			<th> Match_id </th>
-			<th> Home Team </th>
-			<th> Away Team </th>
-			<th> Venue </th>
-			<th> Schedule </th>
+			<th> Name </th>
+			<th> Age </th>
+			<th> Team </th>
+			<th> Batting Style </th>
+			<th> Bowling Style </th>
+			<th> Pool </th>
+			<th> Cost </th>
 		</tr>
-		<tr ng-repeat="m in matches">
-			<td> {{ m.id }} </td>
-			<td> {{ m.team1 }} </td>
-			<td> {{ m.team2 }} </td>
-			<td> {{ m.venue }} </td>
-			<td> {{ m.schedule }} </td>
+		<tr ng-repeat="p in players">
+			<td> {{ p.id }} </td>
+			<td> {{ p.name }} </td>
+			<td> {{ p.age }} </td>
+			<td> {{ p.team }} </td>
+			<td> {{ p.batting_style }} </td>
+			<td> {{ p.bowling_style }} </td>
+			<td> {{ p.pool }} </td>
+			<td> {{ p.cost }} </td>
 		</tr>
 	</table>
 </div>
@@ -41,20 +47,20 @@ if(sessionStorage.getItem("admin-uname") == null && sessionStorage.getItem("unam
 
 var bodyApp = angular.module("body", []);
 
-bodyApp.controller("displayMatchesCtrl", function($scope, $http) {
-	$scope.matches = [];
+bodyApp.controller("displayPlayersCtrl", function($scope, $http) {
+	$scope.players = [];
 
-	$scope.displayMatches = function() {
+	$scope.displayPlayers = function() {
 		$http({
 			method : "POST",
-			url    : "../server/display.php?page=displayMatches",
+			url    : "../server/display.php?page=displayPlayers",
 			data   : {
 			}
 		}).then(function(data) {
 			console.log(data.data);
 
 			if(data.data.status) {
-				$scope.matches = data.data.matches;
+				$scope.players = data.data.players;
 			}
 			else
 				alert('Something went wrong. Try again or contact developer.');
@@ -64,7 +70,7 @@ bodyApp.controller("displayMatchesCtrl", function($scope, $http) {
 		});
 	}
 
-	$scope.displayMatches();
+	$scope.displayPlayers();
 });
 </script>
 

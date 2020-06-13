@@ -32,3 +32,35 @@ if($_GET['page'] == 'displayMatches') {
 	echo '	"status": '.'1';
 	echo '}';
 }
+
+if($_GET['page'] == 'displayPlayers') {
+
+	$sql = "SELECT * FROM players;";
+	$result = mysqli_query($conn, $sql);
+
+	$cnt = 0;
+	$players = '[';
+
+	while($row = mysqli_fetch_assoc($result)) {
+		if($cnt++ > 0)
+			$players .= ', ';
+
+		$players .= '{ ';
+		$players .= '"id": "' . $row['id'] . '", ';
+		$players .= '"name": "' . $row['name'] . '", ';
+		$players .= '"age": "' . $row['age'] . '", ';
+		$players .= '"team": "' . $row['team'] . '", ';
+		$players .= '"batting_style": "' . $row['batting_style'] . '", ';
+		$players .= '"bowling_style": "' . $row['bowling_style'] . '", ';
+		$players .= '"pool": "' . $row['pool'] . '", ';
+		$players .= '"cost": "' . $row['cost'] . '"';
+		$players .= ' }';
+	}
+
+	$players .= ' ]';
+
+	echo '{';
+	echo '	"players": '.$players.', ';
+	echo '	"status": '.'1';
+	echo '}';
+}
