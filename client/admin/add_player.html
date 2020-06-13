@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,intial-scale=1.0">
+	<title>	Fantasy Cricket </title>
+	
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+</head>
+
+<body ng-app="body">
+
+
+<div ng-controller="addPlayerCtrl">
+	<form>
+		<label><b> Player's Name </b></label>
+		<br>
+		<input type="text" ng-model="name" placeholder="Player Name" required>
+		<br>
+		<label><b> Player's Age </b></label>
+		<br>
+		<input type="number" ng-model="age" placeholder="Age" min="0" required>
+		<br>
+		<label><b> Choose Batting Style </b></label>
+		<br>
+		<label>
+			<input type="radio" ng-model="battingStyle" value="Right Handed Batsman">
+			<span> Right Handed Batsman </span>
+		</label>
+		<br>
+		<label>
+			<input type="radio" ng-model="battingStyle" value="Left Handed Batsman">
+			<span> Left Handed Batsman </span>
+		</label>
+		<br>
+		<label><b> Choose bowling Style </b></label>
+		<br>
+		<select ng-model="bowlingStyle" required>
+			<option value="Right Arm Fast Bowler"> Right Arm Fast Bowler </option>
+			<option value="Right Arm Medium Pacer"> Right Arm Medium Pacer </option>
+			<option value="Right Arm Off Spinner"> Right Arm Off Spinner </option>
+			<option value="Right Arm Leg Spinner"> Right Arm Leg Spinner </option>
+			<option value="Left Arm Fast Bowler"> Left Arm Fast Bowler </option>
+			<option value="Left Arm Medium Pacer"> Left Arm Medium Pacer </option>
+			<option value="Left Arm Off Spinner"> Left Arm Off Spinner </option>
+			<option value="Left Arm Leg Spinner"> Left Arm Leg Spinner </option>
+			<option value="None"> None </option>
+		</select>
+		<br>
+		<label><b> Choose Pool </b></label>
+		<br>
+		<select ng-model="pool" required>
+			<option value="Batsman"> Batsman </option>
+			<option value="All-Rounder"> All-Rounder </option>
+			<option value="Bowler"> Bowler </option>
+			<option value="Wicket-Keeper"> Wicket-Keeper </option>
+		</select>
+		<br>
+		<label><b> Player's Cost</b></label>
+		<br>
+		<input type="number" ng-model="cost" placeholder="Cost" min="0" required>
+		<br>
+		<label><b> Authentication Code </b></label>
+		<br>
+		<input type="text" ng-model="authCode" placeholder="Authentication Code" required>
+		<br>
+		<br>
+		<button type="submit" name="add-player" ng-click="addPlayer()" ng-disabled="!name||!age||!battingStyle||!bowlingStyle||!pool||!cost||!authCode"> Add Player </button>
+		<br>
+	</form>
+</div>
+
+<script>
+if(sessionStorage.getItem("admin-uname") == null)
+	window.top.location = "index.html";
+
+var bodyApp = angular.module("body", []);
+
+bodyApp.controller("addPlayerCtrl", function($scope, $http) {
+	$scope.addPlayer = function() {
+		console.log($scope.name);
+		console.log($scope.age);
+		console.log($scope.battingStyle);
+		console.log($scope.bowlingStyle);
+		console.log($scope.pool);
+		console.log($scope.cost);
+		console.log($scope.authCode);
+
+		if($scope.bowlingStyle == 'None' && ($scope.pool == 'All-Rounder' || $scope.pool == 'Bowler')) {
+			alert($scope.pool + ' must have a bowling Style.');
+			return;
+		}
+		if($scope.pool == 'Wicket-Keeper' && $scope.bowlingStyle != 'None') {
+			alert($scope.pool + ' cannot have a bowling Style.');
+			return;
+		}
+
+		// console.log('no issue');
+		$scope.load = true;
+		$http({
+			method : "POST",
+			url    : "../../server/add_player.php?page=addPlayer",
+			data   : {
+				name 		 : $scope.name,
+				age 		 : $scope.age,
+				battingStyle : $scope.battingStyle,
+				bowlingStyle : $scope.bowlingStyle,
+				pool 		 : $scope.pool,
+				cost 		 : $scope.cost,
+				authCode 	 : $scope.authCode
+			}
+		}).then(function(data) {
+			console.log(data.data);
+
+			if(data.data.status) {
+				alert('Player added');
+				window.location.reload();
+			}
+			else if(!data.data.auth)
+				alert('Invalid Authentication Code.');
+
+			// if(data.data.status == 'error')
+			// 	alert('Something went wrong. Try again or contact developer.');
+
+		}, function myError(response) {
+			console.log(response);
+		});
+	}
+});
+
+bodyApp.controller("signinCtrl", function($scope, $http) {
+	$scope.signin = function() {
+		$http({
+			method : "POST",
+			url    : "../../server/admin_entry.php?page=signin",
+			data   : {
+				phnno : $scope.phnno,
+				pwd   : $scope.pwd
+			}
+		}).then(function(data) {
+			console.log(data.data);
+
+			if(data.data.status) {
+				sessionStorage.setItem("admin-uname", $scope.uname);
+				window.location.reload();
+			}
+			else if(!data.data.phnno)
+				alert('This phone number is not registered.');
+			else if(!data.data.status)
+				alert('The username or password is wrong.');
+
+			// if(data.data.status == 'error')
+			// 	alert('Something went wrong. Try again or contact developer.');
+
+		}, function myError(response) {
+			console.log(response);
+		});
+	}
+});
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+</body>
+</html>
