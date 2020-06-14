@@ -4,7 +4,7 @@ include_once 'dbh.inc.php';
 
 $data = json_decode(file_get_contents("php://input"));
 
-if($_GET['page'] == 'displayMatches') {
+if($_GET['page'] == 'fetchMatches') {
 
 	$sql = "SELECT * FROM matches;";
 	$result = mysqli_query($conn, $sql);
@@ -17,7 +17,7 @@ if($_GET['page'] == 'displayMatches') {
 			$matches .= ', ';
 
 		$matches .= '{ ';
-		$matches .= '"id": "' . $row['id'] . '", ';
+		$matches .= '"id": ' . $row['id'] . ', ';
 		$matches .= '"team1": "' . $row['team1'] . '", ';
 		$matches .= '"team2": "' . $row['team2'] . '", ';
 		$matches .= '"venue": "' . $row['venue'] . '", ';
@@ -33,9 +33,13 @@ if($_GET['page'] == 'displayMatches') {
 	echo '}';
 }
 
-if($_GET['page'] == 'displayPlayers') {
+if($_GET['page'] == 'fetchPlayers') {
+	$team = $data->team;
 
-	$sql = "SELECT * FROM players;";
+	if($team == 'all')
+		$sql = "SELECT * FROM players;";
+	else
+		$sql = "SELECT * FROM players WHERE team='$team';";
 	$result = mysqli_query($conn, $sql);
 
 	$cnt = 0;
@@ -46,14 +50,14 @@ if($_GET['page'] == 'displayPlayers') {
 			$players .= ', ';
 
 		$players .= '{ ';
-		$players .= '"id": "' . $row['id'] . '", ';
+		$players .= '"id": ' . $row['id'] . ', ';
 		$players .= '"name": "' . $row['name'] . '", ';
-		$players .= '"age": "' . $row['age'] . '", ';
+		$players .= '"age": ' . $row['age'] . ', ';
 		$players .= '"team": "' . $row['team'] . '", ';
 		$players .= '"batting_style": "' . $row['batting_style'] . '", ';
 		$players .= '"bowling_style": "' . $row['bowling_style'] . '", ';
 		$players .= '"pool": "' . $row['pool'] . '", ';
-		$players .= '"cost": "' . $row['cost'] . '"';
+		$players .= '"cost": ' . $row['cost'] . '';
 		$players .= ' }';
 	}
 

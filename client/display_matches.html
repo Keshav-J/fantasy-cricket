@@ -18,15 +18,15 @@
 
 <div ng-controller="displayMatchesCtrl">
 	<table>
-		<tr>
-			<th> Match_id </th>
-			<th> Home Team </th>
-			<th> Away Team </th>
-			<th> Venue </th>
-			<th> Schedule </th>
+		<tr style="cursor: pointer;">
+			<th> S. No. </th>
+			<th ng-clicl="sort('team1')"> Home Team </th>
+			<th ng-clicl="sort('team2')"> Away Team </th>
+			<th ng-clicl="sort('venue')"> Venue </th>
+			<th ng-clicl="sort('schedule')"> Schedule </th>
 		</tr>
-		<tr ng-repeat="m in matches">
-			<td> {{ m.id }} </td>
+		<tr ng-repeat="m in matches | orderBy : col : rev">
+			<td> {{ $index + 1 }} </td>
 			<td> {{ m.team1 }} </td>
 			<td> {{ m.team2 }} </td>
 			<td> {{ m.venue }} </td>
@@ -42,12 +42,23 @@ if(sessionStorage.getItem("admin-uname") == null && sessionStorage.getItem("unam
 var bodyApp = angular.module("body", []);
 
 bodyApp.controller("displayMatchesCtrl", function($scope, $http) {
+	$scope.col = 'id';
+	$scope.rev = false;
+	$scope.sort = function(x) {
+		if(x == $scope.col)
+			$scope.rev = !$scope.rev;
+		else {
+			$scope.col = x;
+			$scope.rev = false;
+		}
+	}
+	
 	$scope.matches = [];
 
-	$scope.displayMatches = function() {
+	$scope.fetchMatches = function() {
 		$http({
 			method : "POST",
-			url    : "../server/display.php?page=displayMatches",
+			url    : "../server/display.php?page=fetchMatches",
 			data   : {
 			}
 		}).then(function(data) {
@@ -64,7 +75,7 @@ bodyApp.controller("displayMatchesCtrl", function($scope, $http) {
 		});
 	}
 
-	$scope.displayMatches();
+	$scope.fetchMatches();
 });
 </script>
 

@@ -40,12 +40,18 @@ if($_GET['page'] == 'signup') {
 		$sql = "INSERT INTO users(name, uname, phnno, pwd) VALUES('$name', '$uname', '$phnno', '$pwd');";
 		mysqli_query($conn, $sql);
 
+		$sql = "SELECT * FROM users WHERE uname='$uname';";
+		mysqli_query($conn, $sql);
+		$uid = mysqli_fetch_assoc($result)['id'];		
+
 		$status = 1;
 	}
 
 	echo '{';
 	echo '	"phnno": '.$phnnoValid.', ';
 	echo '	"uname": '.$unameValid.', ';
+	if($status)
+		echo '	"uid": '.$uid.', ';
 	echo '	"status": '.$status;
 	echo '}';
 }
@@ -64,7 +70,9 @@ if($_GET['page'] == 'signin') {
 
 	$status = 0;
 	if($phnnoValid) {
-		$hashedPwd = mysqli_fetch_assoc($result)['pwd'];
+		$row = mysqli_fetch_assoc($result);
+		$hashedPwd = $row['pwd'];
+		$uid = $row['id'];
 
 		if(password_verify($pwd, $hashedPwd))
 			$status = 1;
@@ -72,6 +80,8 @@ if($_GET['page'] == 'signin') {
 
 	echo '{';
 	echo '	"phnno": '.$phnnoValid.', ';
+	if($status)
+		echo '	"uid": '.$uid.', ';
 	echo '	"status": '.$status;
 	echo '}';
 }

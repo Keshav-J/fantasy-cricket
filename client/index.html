@@ -14,6 +14,13 @@
 </head>
 <body>
 
+
+<a href="display_matches.html"> View Matches </a>
+<br>
+<a href="display_players.html"> View Players </a>
+<br>
+<a href="select_team.html"> Select Team </a>
+<br>
 <button  onclick="logout()">Logout</button>
 
 
@@ -23,6 +30,7 @@
 
 	function logout() {
 		sessionStorage.removeItem("uname");
+		sessionStorage.removeItem("uid");
 		window.location.reload();
 	}
 </script>

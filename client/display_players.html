@@ -18,18 +18,18 @@
 
 <div ng-controller="displayPlayersCtrl">
 	<table>
-		<tr>
-			<th> Match_id </th>
-			<th> Name </th>
-			<th> Age </th>
-			<th> Team </th>
-			<th> Batting Style </th>
-			<th> Bowling Style </th>
-			<th> Pool </th>
-			<th> Cost </th>
+		<tr style="cursor: pointer;">
+			<th> S. No. </th>
+			<th ng-click="sort('name')"> Name </th>
+			<th ng-click="sort('age')"> Age </th>
+			<th ng-click="sort('team')"> Team </th>
+			<th ng-click="sort('batting_style')"> Batting Style </th>
+			<th ng-click="sort('bowling_style')"> Bowling Style </th>
+			<th ng-click="sort('pool')"> Pool </th>
+			<th ng-click="sort('cost')"> Cost </th>
 		</tr>
-		<tr ng-repeat="p in players">
-			<td> {{ p.id }} </td>
+		<tr ng-repeat="p in players | orderBy : col : rev" ng-click="dis(p)">
+			<td> {{ $index + 1 }} </td>
 			<td> {{ p.name }} </td>
 			<td> {{ p.age }} </td>
 			<td> {{ p.team }} </td>
@@ -48,13 +48,29 @@ if(sessionStorage.getItem("admin-uname") == null && sessionStorage.getItem("unam
 var bodyApp = angular.module("body", []);
 
 bodyApp.controller("displayPlayersCtrl", function($scope, $http) {
+	$scope.col = 'id';
+	$scope.rev = false;
+	$scope.sort = function(x) {
+		if(x == $scope.col)
+			$scope.rev = !$scope.rev;
+		else {
+			$scope.col = x;
+			$scope.rev = false;
+		}
+	}
+	
 	$scope.players = [];
 
-	$scope.displayPlayers = function() {
+	$scope.dis = function(x) {
+		console.log(x);
+	}
+
+	$scope.fetchPlayers = function() {
 		$http({
 			method : "POST",
-			url    : "../server/display.php?page=displayPlayers",
+			url    : "../server/display.php?page=fetchPlayers",
 			data   : {
+				team: 'all'
 			}
 		}).then(function(data) {
 			console.log(data.data);
@@ -70,7 +86,7 @@ bodyApp.controller("displayPlayersCtrl", function($scope, $http) {
 		});
 	}
 
-	$scope.displayPlayers();
+	$scope.fetchPlayers();
 });
 </script>
 

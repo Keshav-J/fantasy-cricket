@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,intial-scale=1.0">
+	<title>	Fantasy Cricket </title>
+	
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+</head>
+
+<body ng-app="body">
+
+
+<div ng-controller="selectTeamCtrl">
+	<div ng-show="pg1">
+		<table>
+			<tr>
+				<th> S. No. </th>
+				<th> Home Team </th>
+				<th> Away Team </th>
+				<th> Venue </th>
+				<th> Schedule </th>
+			</tr>
+			<tr ng-repeat="m in matches" ng-click="chooseMatch(m)" style="cursor: pointer;">
+				<td> {{ $index + 1 }} </td>
+				<td> {{ m.team1 }} </td>
+				<td> {{ m.team2 }} </td>
+				<td> {{ m.venue }} </td>
+				<td> {{ m.schedule }} </td>
+			</tr>
+		</table>
+	</div>
+
+	<div ng-show="pg2">
+		<div>
+			<label> <b> Home Team: </b> {{ match.team1 }} </label>
+			<br>
+			<label> <b> Away Team: </b> {{ match.team2 }} </label>
+			<br>
+			<label> <b> Venue: </b> {{ match.venue }} </label>
+			<br>
+			<label> <b> Schedule: </b> {{ match.schedule }} </label>
+		</div>
+
+		<hr>
+
+		<div>
+			<h3> My Team </h3>
+			<br>
+			<label><b> Players: </b> {{ team1 + team2 }} </label>
+			<br>
+			<label><b> Batsmen: </b> {{ batsmen }} </label>
+			<br>
+			<label><b> Wicket-Keeper: </b> {{ wicketKeeper }} </label>
+			<br>
+			<label><b> All-Rounders: </b> {{ allRounders }} </label>
+			<br>
+			<label><b> Bowlers: </b> {{ bowlers }} </label>
+			<br>
+			<br>
+			<label><b> Money Spent: </b> {{ spent }} </label>
+			<br>
+			<label><b> Money Left: </b> {{ budget - spent }} </label>
+			<br>
+			<table>
+			<table style="cursor: pointer;">
+				<tr>
+					<th> S. No. </th>
+					<th ng-click="sortMyTeam('name')"> Name </th>
+					<th ng-click="sortMyTeam('team')"> Team </th>
+					<th ng-click="sortMyTeam('batting_style')"> Batting Style </th>
+					<th ng-click="sortMyTeam('bowling_style')"> Bowling Style </th>
+					<th ng-click="sortMyTeam('pool')"> Pool </th>
+					<th ng-click="sortMyTeam('cost')"> Cost </th>
+				</tr>
+				<tr ng-repeat="p in myTeam | orderBy : myCol : myRev" ng-click="unselectPlayer(p)">
+					<td> {{ $index + 1 }} </td>
+					<td> {{ p.name }} </td>
+					<td> {{ p.team }} </td>
+					<td> {{ p.batting_style }} </td>
+					<td> {{ p.bowling_style }} </td>
+					<td> {{ p.pool }} </td>
+					<td> {{ p.cost }} </td>
+				</tr>
+			</table>
+			<button type="submit" ng-disabled="myTeam.length!=11" ng-click="submitTeam()"> Submit Team </button>
+		</div>
+
+		<hr>
+
+		<div>
+			<table style="cursor: pointer;">
+				<tr>
+					<th> S. No. </th>
+					<th ng-click="sort('name')"> Name </th>
+					<th ng-click="sort('team')"> Team </th>
+					<th ng-click="sort('batting_style')"> Batting Style </th>
+					<th ng-click="sort('bowling_style')"> Bowling Style </th>
+					<th ng-click="sort('pool')"> Pool </th>
+					<th ng-click="sort('cost')"> Cost </th>
+				</tr>
+				<tr ng-repeat="p in players | orderBy : col : rev" ng-click="selectPlayer(p)">
+					<td> {{ $index + 1 }} </td>
+					<td> {{ p.name }} </td>
+					<td> {{ p.team }} </td>
+					<td> {{ p.batting_style }} </td>
+					<td> {{ p.bowling_style }} </td>
+					<td> {{ p.pool }} </td>
+					<td> {{ p.cost }} </td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+
+<script>
+if(sessionStorage.getItem("uname") == null)
+	window.top.location = "index.html";
+
+var bodyApp = angular.module("body", []);
+
+bodyApp.controller("selectTeamCtrl", function($scope, $http) {
+	$scope.col = 'id';
+	$scope.rev = false;
+	$scope.sort = function(x) {
+		if(x == $scope.col)
+			$scope.rev = !$scope.rev;
+		else {
+			$scope.col = x;
+			$scope.rev = false;
+		}
+	}
+	$scope.myCol = 'id';
+	$scope.myRev = false;
+	$scope.sortMyTeam = function(x) {
+		if(x == $scope.myCol)
+			$scope.myRev = !$scope.myRev;
+		else {
+			$scope.myCol = x;
+			$scope.myRev = false;
+		}
+	}
+
+
+	$scope.pg1 = false;
+	$scope.pg2 = false;
+	
+	$scope.matches = [];
+	$scope.match = {};
+
+	$scope.players = [];
+	$scope.myTeam = [];
+
+	$scope.budget = 1000000000;
+	$scope.spent = 0;
+
+	$scope.batsmen = 0;
+	$scope.bowlers = 0;
+	$scope.wicketKeeper = 0;
+	$scope.allRounders = 0;
+	$scope.team1 = 0;
+	$scope.team2 = 0;
+
+
+	$scope.displayMatches = function() {
+		$http({
+			method : "POST",
+			url    : "../server/display.php?page=fetchMatches",
+			data   : {
+			}
+		}).then(function(data) {
+			console.log(data.data);
+
+			if(data.data.status) {
+				$scope.matches = data.data.matches;
+			}
+			else
+				alert('Something went wrong. Try again or contact developer.');
+
+		}, function myError(response) {
+			console.log(response);
+		});
+	}
+	$scope.fetchPlayers = function(teamName) {
+		$http({
+			method : "POST",
+			url    : "../server/display.php?page=fetchPlayers",
+			data   : {
+				team: teamName
+			}
+		}).then(function(data) {
+			console.log(data.data);
+
+			if(data.data.status) {
+				$scope.players = ($scope.players).concat(data.data.players);
+			}
+			else
+				alert('Something went wrong. Try again or contact developer.');
+
+		}, function myError(response) {
+			console.log(response);
+		});
+	}
+
+	$scope.chooseMatch = function(match) {
+		console.log(match);
+		$scope.match = match;
+
+		$scope.pg1 = false;
+		$scope.pg2 = true;
+
+		$scope.fetchPlayers(match.team1);
+		$scope.fetchPlayers(match.team2);
+
+		($scope.players).sort(function(a, b) {
+            return (a.pool).localeCompare(b.pool);
+        });
+
+		console.log($scope.players);
+	}
+
+	$scope.selectPlayer = function(player) {
+		console.log(player);
+
+		if($scope.myTeam.length == 11) {
+			alert('Team Limit Reached.');
+			return;
+		}
+		if($scope.myTeam.length == 10) {
+			if(player.pool == 'All-Rounder')	$scope.allRounders++;
+			if(player.pool == 'Batsman')		$scope.batsmen++;
+			if(player.pool == 'Bowler')			$scope.bowlers++;
+			if(player.pool == 'Wicket-Keeper')	$scope.wicketKeeper++;
+
+			var valid = true;
+			if($scope.batsmen<3 || $scope.wicketKeeper<1 || $scope.allRounders<1 || $scope.bowlers<3) {
+				alert('A team must have atleast 3 Batsmen, 3 Bowlers, 1 All-Rounder and exactly 1 Wicket-Keeper.');
+				valid = false;
+			}
+
+			if(player.pool == 'All-Rounder')	$scope.allRounders--;
+			if(player.pool == 'Batsman')		$scope.batsmen--;
+			if(player.pool == 'Bowler')			$scope.bowlers--;
+			if(player.pool == 'Wicket-Keeper')	$scope.wicketKeeper--;
+
+			if(!valid) return;
+		}
+		if((player.team==$scope.match.team1 && $scope.team1+1 > 6) || (player.team==$scope.match.team2 && $scope.team2+1 > 6)) {
+			alert('Cannot choose more than 6 players from single team.');
+			return;
+		}
+		if(player.pool=='Wicket-Keeper' && $scope.wicketKeeper > 0) {
+			alert('Cannot choose more than 1 wicket keeper.');
+			return;
+		}
+
+		var idx = ($scope.players).indexOf(player);
+		if(idx > -1)
+			($scope.players).splice(idx, 1);
+
+		($scope.myTeam).push(player);
+		
+		$scope.spent += player.cost;
+		if(player.pool == 'All-Rounder')	$scope.allRounders++;
+		if(player.pool == 'Batsman')		$scope.batsmen++;
+		if(player.pool == 'Bowler')			$scope.bowlers++;
+		if(player.pool == 'Wicket-Keeper')	$scope.wicketKeeper++;
+
+		if(player.team == $scope.match.team1)	$scope.team1++;
+		else									$scope.team2++;
+
+	}
+
+	$scope.unselectPlayer = function(player) {
+		console.log(player);
+
+		var idx = ($scope.myTeam).indexOf(player);
+		if(idx > -1)
+			($scope.myTeam).splice(idx, 1);
+
+		($scope.players).push(player);
+		
+		$scope.spent -= player.cost;
+		if(player.pool == 'All-Rounder')	$scope.allRounders--;
+		if(player.pool == 'Batsman')		$scope.batsmen--;
+		if(player.pool == 'Bowler')			$scope.bowlers--;
+		if(player.pool == 'Wicket-Keeper')	$scope.wicketKeeper--;
+
+		if(player.team == $scope.match.team1)	$scope.team1--;
+		else									$scope.team2--;
+
+	}
+
+	$scope.submitTeam = function() {
+		console.log($scope.myTeam);
+		var team = [];
+		for(var i=0 ; i<11 ; ++i)
+			team.push($scope.myTeam[i].id);
+
+		console.log(team);
+		$http({
+			method : "POST",
+			url    : "../server/select_team.php?page=selectTeam",
+			data   : {
+				match_id : $scope.match.id,
+				player_id: sessionStorage.getItem("uid"),
+				team 	 : team.toString(),
+				cost 	 : $scope.spent
+			}
+		}).then(function(data) {
+			console.log(data.data);
+
+			if(data.data.status) {
+				alert('Team submitted successfully.');
+			}
+			else
+				alert('Something went wrong. Try again or contact developer.');
+
+		}, function myError(response) {
+			console.log(response);
+		});
+	}
+
+	$scope.init = function() {
+		$scope.pg1 = true;
+		$scope.pg2 = false;
+
+		$scope.displayMatches();
+	}
+
+	$scope.init();
+});
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+</body>
+</html>

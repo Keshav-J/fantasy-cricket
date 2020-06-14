@@ -65,6 +65,7 @@ bodyApp.controller("signupCtrl", function($scope, $http) {
 
 			if(data.data.status) {
 				sessionStorage.setItem("uname", $scope.uname);
+				sessionStorage.setItem("uid", data.data.uid);
 				window.location.reload();
 			}
 			else if(!data.data.phnno)
@@ -95,6 +96,7 @@ bodyApp.controller("signinCtrl", function($scope, $http) {
 
 			if(data.data.status) {
 				sessionStorage.setItem("uname", $scope.uname);
+				sessionStorage.setItem("uid", data.data.uid);
 				window.location.reload();
 			}
 			else if(!data.data.phnno)
