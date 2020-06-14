@@ -36,7 +36,7 @@ CREATE TABLE matches(
 CREATE TABLE selections(
 	id int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	match_id int(11) NOT NULL,
-	player_id int(11) NOT NULL,
+	user_id int(11) NOT NULL,
 	team varchar(256) NOT NULL,
 	cost int(11) NOT NULL
 );
