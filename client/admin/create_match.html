@@ -12,46 +12,103 @@
 
 <body ng-app="body">
 
+<style>
+	body {
+		background-color: #f5f5f5;
+	}
+	.container {
+		background-color: white;
+		width: 350px;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		border: 1px solid #dee2e6;
+		padding: 10px;
+		border-radius: 5px;
+		padding-bottom: 30px;
+		box-shadow: 1px 1px 8px grey;
+	}
+	.container .btn {
+		position: absolute;
+		left: 50%;
+		transform: translateX(-50%);
+	}
+	.container .nav {
+		cursor: pointer;
+	}
+	#signup {
+		display: none;
+	}
+</style>
 
-<div ng-controller="createMatchCtrl">
+<nav class="navbar navbar-expand-lg navbar-light bg-secondary">
+  <a class="navbar-brand text-light" href="index.html">FantasyCricket</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link text-light" href="display_matches.html"> View Matches </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-light" href="display_players.html"> View Players </a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link text-light" href="create_match.html"> Create Match </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-light" href="add_player.html"> Add Player </a>
+      </li>
+    </ul>
+    <ul class="navbar-nav mr-right">
+      <li class="nav-item">
+        <a class="nav-link text-light" href="#" onclick="logout()"> Logout </a>
+      </li>
+     </ul>
+  </div>
+</nav>
+
+<div class="container" ng-controller="createMatchCtrl">
 	<form>
-		<label><b> Home Team </b></label>
-		<br>
-		<select ng-model="team1" required>
-			<option value="Mumbai Indians"> Mumbai Indians </option>
-			<option value="Chennai Super Kings"> Chennai Super Kings </option>
-			<option value="Royal Challengers Banglore"> Royal Challengers Banglore </option>
-			<option value="Kolkata Knight Riders"> Kolkata Knight Riders </option>
-		</select>
-		<br>
-		<label><b> Away Team </b></label>
-		<br>
-		<select ng-model="team2" required>
-			<option value="Mumbai Indians"> Mumbai Indians </option>
-			<option value="Chennai Super Kings"> Chennai Super Kings </option>
-			<option value="Royal Challengers Banglore"> Royal Challengers Banglore </option>
-			<option value="Kolkata Knight Riders"> Kolkata Knight Riders </option>
-		</select>
-		<br>
-		<label><b> Venue </b></label>
-		<br>
-		<select ng-model="venue" required>
-			<option value="Wankhede Stadium, Mumbai"> Wankhede Stadium, Mumbai </option>
-			<option value="M. A. Chidambaram Stadium, Chennai"> M. A. Chidambaram Stadium, Chennai </option>
-			<option value="M Chinnaswamy Stadium, Banglore"> M Chinnaswamy Stadium, Banglore </option>
-			<option value="Eden Gardens, Kolkata"> Eden Gardens, Kolkata </option>
-		</select>
-		<br>
-		<label><b> Schedule </b></label>
-		<br>
-		<input type="datetime-local" ng-model="schedule" required>
-		<br>
-		<label><b> Authentication Code </b></label>
-		<br>
-		<input type="password" ng-model="authCode" placeholder="Authentication Code" required>
-		<br>
-		<br>
-		<button type="submit" name="create-match" ng-click="createMatch()" > Create Match </button>
+		<div class="form-group">
+			<label><b> Home Team </b></label>
+			<select class="custom-select" ng-model="team1" required>
+				<option value="Mumbai Indians"> Mumbai Indians </option>
+				<option value="Chennai Super Kings"> Chennai Super Kings </option>
+				<option value="Royal Challengers Banglore"> Royal Challengers Banglore </option>
+				<option value="Kolkata Knight Riders"> Kolkata Knight Riders </option>
+			</select>
+		</div>
+		<div class="form-group">
+			<label><b> Away Team </b></label>
+			<select class="custom-select" ng-model="team2" required>
+				<option value="Mumbai Indians"> Mumbai Indians </option>
+				<option value="Chennai Super Kings"> Chennai Super Kings </option>
+				<option value="Royal Challengers Banglore"> Royal Challengers Banglore </option>
+				<option value="Kolkata Knight Riders"> Kolkata Knight Riders </option>
+			</select>
+		</div>
+		<div class="form-group">
+			<label><b> Venue </b></label>
+			<select class="custom-select" ng-model="venue" required>
+				<option value="Wankhede Stadium, Mumbai"> Wankhede Stadium, Mumbai </option>
+				<option value="M. A. Chidambaram Stadium, Chennai"> M. A. Chidambaram Stadium, Chennai </option>
+				<option value="M Chinnaswamy Stadium, Banglore"> M Chinnaswamy Stadium, Banglore </option>
+				<option value="Eden Gardens, Kolkata"> Eden Gardens, Kolkata </option>
+			</select>
+		</div>
+		<div class="form-group">
+			<label><b> Schedule </b></label>
+			<input class="form-control" type="datetime-local" ng-model="schedule" required>
+		</div>
+		<div class="form-group">
+			<label><b> Authentication Code </b></label>
+			<input class="form-control" type="password" ng-model="authCode" placeholder="Authentication Code" required>
+		</div>
+		<button type="submit" class="btn btn-primary" name="create-match" ng-click="createMatch()" > Create Match </button>
 		<br>
 	</form>
 </div>
@@ -59,6 +116,11 @@
 <script>
 if(sessionStorage.getItem("admin-uname") == null)
 	window.top.location = "index.html";
+
+function logout() {
+	sessionStorage.removeItem("admin-uname");
+	window.location.reload();
+}
 
 var bodyApp = angular.module("body", []);
 
@@ -81,6 +143,8 @@ bodyApp.controller("createMatchCtrl", function($scope, $http) {
 			alert('You can only start a match 10 minutes prior to the schedule');
 			return;
 		}
+
+		($scope.schedule).setMinutes(($scope.schedule).getMinutes() + 330);
 
 		// console.log('no issue');
 		$http({

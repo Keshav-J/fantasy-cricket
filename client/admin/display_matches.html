@@ -12,6 +12,12 @@
 
 <body ng-app="body">
 
+<style>
+	body {
+		background-color: #f8f9fa;
+	}
+</style>
+
 <nav class="navbar navbar-expand-lg navbar-light bg-secondary">
   <a class="navbar-brand text-light" href="index.html">FantasyCricket</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,14 +26,17 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link text-light" href="select_team.html"> Select Team </a>
-      </li>
       <li class="nav-item active">
+        <a class="nav-link text-light" href="display_matches.html"> View Matches </a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link text-light" href="display_players.html"> View Players </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-light" href="display_matches.html"> View Matches </a>
+        <a class="nav-link text-light" href="create_match.html"> Create Match </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-light" href="add_player.html"> Add Player </a>
       </li>
     </ul>
     <ul class="navbar-nav mr-right">
@@ -38,48 +47,41 @@
   </div>
 </nav>
 
-<div class="container-fluid table-responsive" ng-controller="displayPlayersCtrl" style="margin-top: 50px; background-color: grey;">
+<div class="container table-responsive" ng-controller="displayMatchesCtrl" style="margin-top: 50px; background-color: grey;">
 	<table class="table text-light table-hover" style="cursor: pointer;">
 		<thead>
 			<tr>
-				<th> S.No. </th>
-				<th ng-click="sort('name')"> Name </th>
-				<th ng-click="sort('age')"> Age </th>
-				<th ng-click="sort('team')"> Team </th>
-				<th ng-click="sort('batting_style')"> Batting Style </th>
-				<th ng-click="sort('bowling_style')"> Bowling Style </th>
-				<th ng-click="sort('pool')"> Pool </th>
-				<th ng-click="sort('cost')"> Cost </th>
+				<th scope="col"> S. No. </th>
+				<th scope="col" ng-clicl="sort('team1')"> Home Team </th>
+				<th scope="col" ng-clicl="sort('team2')"> Away Team </th>
+				<th scope="col" ng-clicl="sort('venue')"> Venue </th>
+				<th scope="col" ng-clicl="sort('schedule')"> Schedule </th>
 			</tr>
 		</thead>
 		<tbody>
-			<tr ng-repeat="p in players | orderBy : col : rev" ng-click="dis(p)">
+			<tr ng-repeat="m in matches | orderBy : col : rev">
 				<td> {{ $index + 1 }} </td>
-				<td> {{ p.name }} </td>
-				<td> {{ p.age }} </td>
-				<td> {{ p.team }} </td>
-				<td> {{ p.batting_style }} </td>
-				<td> {{ p.bowling_style }} </td>
-				<td> {{ p.pool }} </td>
-				<td> {{ p.cost }} </td>
+				<td> {{ m.team1 }} </td>
+				<td> {{ m.team2 }} </td>
+				<td> {{ m.venue }} </td>
+				<td> {{ m.schedule }} </td>
 			</tr>
 		</tbody>
 	</table>
 </div>
 
 <script>
-if(sessionStorage.getItem("uname") == null)
+if(sessionStorage.getItem("admin-uname") == null)
 	window.top.location = "index.html";
 
 function logout() {
-	sessionStorage.removeItem("uname");
-	sessionStorage.removeItem("uid");
+	sessionStorage.removeItem("admin-uname");
 	window.location.reload();
 }
 
 var bodyApp = angular.module("body", []);
 
-bodyApp.controller("displayPlayersCtrl", function($scope, $http) {
+bodyApp.controller("displayMatchesCtrl", function($scope, $http) {
 	$scope.col = 'id';
 	$scope.rev = false;
 	$scope.sort = function(x) {
@@ -91,24 +93,19 @@ bodyApp.controller("displayPlayersCtrl", function($scope, $http) {
 		}
 	}
 	
-	$scope.players = [];
+	$scope.matches = [];
 
-	$scope.dis = function(x) {
-		console.log(x);
-	}
-
-	$scope.fetchPlayers = function() {
+	$scope.fetchMatches = function() {
 		$http({
 			method : "POST",
-			url    : "../server/display.php?page=fetchPlayers",
+			url    : "../../server/display.php?page=fetchMatches",
 			data   : {
-				team: 'all'
 			}
 		}).then(function(data) {
 			console.log(data.data);
 
 			if(data.data.status) {
-				$scope.players = data.data.players;
+				$scope.matches = data.data.matches;
 			}
 			else
 				alert('Something went wrong. Try again or contact developer.');
@@ -118,7 +115,7 @@ bodyApp.controller("displayPlayersCtrl", function($scope, $http) {
 		});
 	}
 
-	$scope.fetchPlayers();
+	$scope.fetchMatches();
 });
 </script>
 

@@ -12,29 +12,70 @@
 
 <body ng-app="body">
 
+<style>
+	body {
+		background-color: #f8f9fa;
+	}
+</style>
 
-<div ng-controller="displayMatchesCtrl">
-	<table>
-		<tr style="cursor: pointer;">
-			<th> S. No. </th>
-			<th ng-clicl="sort('team1')"> Home Team </th>
-			<th ng-clicl="sort('team2')"> Away Team </th>
-			<th ng-clicl="sort('venue')"> Venue </th>
-			<th ng-clicl="sort('schedule')"> Schedule </th>
-		</tr>
-		<tr ng-repeat="m in matches | orderBy : col : rev">
-			<td> {{ $index + 1 }} </td>
-			<td> {{ m.team1 }} </td>
-			<td> {{ m.team2 }} </td>
-			<td> {{ m.venue }} </td>
-			<td> {{ m.schedule }} </td>
-		</tr>
+<nav class="navbar navbar-expand-lg navbar-light bg-secondary">
+  <a class="navbar-brand text-light" href="index.html">FantasyCricket</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link text-light" href="select_team.html"> Select Team </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-light" href="display_players.html"> View Players </a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link text-light" href="display_matches.html"> View Matches </a>
+      </li>
+    </ul>
+    <ul class="navbar-nav mr-right">
+      <li class="nav-item">
+        <a class="nav-link text-light" href="#" onclick="logout()"> Logout </a>
+      </li>
+     </ul>
+  </div>
+</nav>
+
+<div class="container table-responsive" ng-controller="displayMatchesCtrl" style="margin-top: 50px; background-color: grey;">
+	<table class="table text-light table-hover" style="cursor: pointer;">
+		<thead>
+			<tr>
+				<th scope="col"> S. No. </th>
+				<th scope="col" ng-clicl="sort('team1')"> Home Team </th>
+				<th scope="col" ng-clicl="sort('team2')"> Away Team </th>
+				<th scope="col" ng-clicl="sort('venue')"> Venue </th>
+				<th scope="col" ng-clicl="sort('schedule')"> Schedule </th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="m in matches | orderBy : col : rev">
+				<td> {{ $index + 1 }} </td>
+				<td> {{ m.team1 }} </td>
+				<td> {{ m.team2 }} </td>
+				<td> {{ m.venue }} </td>
+				<td> {{ m.schedule }} </td>
+			</tr>
+		</tbody>
 	</table>
 </div>
 
 <script>
-if(sessionStorage.getItem("admin-uname") == null && sessionStorage.getItem("uname") == null)
+if(sessionStorage.getItem("uname") == null)
 	window.top.location = "index.html";
+
+function logout() {
+	sessionStorage.removeItem("uname");
+	sessionStorage.removeItem("uid");
+	window.location.reload();
+}
 
 var bodyApp = angular.module("body", []);
 

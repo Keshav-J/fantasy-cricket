@@ -11,16 +11,34 @@
 </head>
 <body>
 
-<a href="add_player.html"> Add Player </a>
-<br>
-<a href="create_match.html"> Create Match </a>
-<br>
-<a href="../display_matches.html"> View Matches </a>
-<br>
-<a href="../display_players.html"> View Players </a>
-<br>
-<button onclick="logout()">Logout</button>
+<nav class="navbar navbar-expand-lg navbar-light bg-secondary">
+  <a class="navbar-brand text-light" href="index.html">FantasyCricket</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link text-light" href="display_matches.html"> View Matches </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-light" href="display_players.html"> View Players </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-light" href="create_match.html"> Create Match </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-light" href="add_player.html"> Add Player </a>
+      </li>
+    </ul>
+    <ul class="navbar-nav mr-right">
+      <li class="nav-item">
+        <a class="nav-link text-light" href="#" onclick="logout()"> Logout </a>
+      </li>
+     </ul>
+  </div>
+</nav>
 
 <script>
 	if(sessionStorage.getItem("admin-uname") == null)

@@ -23,14 +23,13 @@ if($_GET['page'] == 'signup') {
 	else
 		$phnnoValid = 1;
 
+	$unameValid = 1;
 	if($phnnoValid) {
 		$sql = "SELECT * FROM users WHERE uname='$uname';";
 		$result = mysqli_query($conn, $sql);
 
 		if(mysqli_num_rows($result) > 0)
 			$unameValid = 0;
-		else
-			$unameValid = 1;
 	}
 
 	$status = 0;

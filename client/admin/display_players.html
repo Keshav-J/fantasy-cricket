@@ -21,13 +21,16 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
-        <a class="nav-link text-light" href="select_team.html"> Select Team </a>
+        <a class="nav-link text-light" href="display_matches.html"> View Matches </a>
       </li>
       <li class="nav-item active">
         <a class="nav-link text-light" href="display_players.html"> View Players </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-light" href="display_matches.html"> View Matches </a>
+        <a class="nav-link text-light" href="create_match.html"> Create Match </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-light" href="add_player.html"> Add Player </a>
       </li>
     </ul>
     <ul class="navbar-nav mr-right">
@@ -68,12 +71,11 @@
 </div>
 
 <script>
-if(sessionStorage.getItem("uname") == null)
+if(sessionStorage.getItem("admin-uname") == null)
 	window.top.location = "index.html";
 
 function logout() {
-	sessionStorage.removeItem("uname");
-	sessionStorage.removeItem("uid");
+	sessionStorage.removeItem("admin-uname");
 	window.location.reload();
 }
 
@@ -100,7 +102,7 @@ bodyApp.controller("displayPlayersCtrl", function($scope, $http) {
 	$scope.fetchPlayers = function() {
 		$http({
 			method : "POST",
-			url    : "../server/display.php?page=fetchPlayers",
+			url    : "../../server/display.php?page=fetchPlayers",
 			data   : {
 				team: 'all'
 			}
